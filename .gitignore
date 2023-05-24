@@ -1,1 +1,20 @@
 node_modules
+# Ignore compiled object files and executables
+*.o
+*.out
+*.exe
+
+# Ignore log files
+*.log
+
+# Ignore system-specific files or directories
+/bin/
+/build/
+
+# Ignore sensitive or private information
+credentials.txt
+secrets/
+
+# Ignore IDE-specific files or directories
+.vscode/
+.idea/
