@@ -1,0 +1,51 @@
+const mongoose = require('mmongoose')
+
+const AuctionSchema = new mongoose.Schema({
+    title:{
+        type:String,
+        required:true
+    },
+    description:{
+        type: String,
+        required: true
+    },
+    photo:{
+        type: String,
+        required: true
+    },
+    initialBid:{
+        type: Number,
+        default: 0
+    },
+    creator:{
+        type:mongoose.Types.ObjectId,
+        ref:'User'
+    },
+    startDate:{
+        type: Date,
+        required:true
+    },
+    duration:{
+        type: Number,
+        default: 300,
+    },
+    bidders:[
+        {
+            type: mongoose.Types.ObjectId,
+            ref:'User'
+        }
+    ],
+    highestBid:{
+        type: Number,
+        default:initialBid
+    },
+    winner:{
+        type: mongoose.Types.ObjectId,
+        ref: 'User'
+    },
+    staus:{
+        type: String,
+        default: 'Upcoming'
+    }
+})
+module.exports = mongoose.model('Auction',  AuctionSchema)

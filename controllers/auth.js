@@ -8,7 +8,12 @@ const login = async(req, res) =>{
         res.status(400).send("Email or password not provided")
     }
     const user = await User.findOne({email})
+    const isPasswordcorrect = await bycrypt.compare(password, user.password)
+    if(!isPasswordcorrect){
+        res.status(401).send("Access denied kid! ")
+    }
     const token = jwt.sign({email, password}, process.env.SECRET, {expiresIn: '30d'})
+    
     res.status(200).json({user, token});
     
     // res.send("Hi")
@@ -20,7 +25,7 @@ const register = async(req, res)=>{
     const hashedPassword = await bycrypt.hash(password, salt )
     const user = await User.create({email, password: hashedPassword, name});
     const token = jwt.sign({email, password: hashedPassword, name}, process.env.SECRET, {expiresIn: '30d'});
-    res.json({token, user});
+    res.json({user,token});
 
 }
 module.exports = {login, register}
