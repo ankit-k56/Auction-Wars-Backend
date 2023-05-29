@@ -3,12 +3,13 @@ const express = require("express")
 const cors = require('cors');
 const connectDb = require("./db/connect")
 const authRouter = require('./routes/auth')
+const auctionRouter = require('./routes/auction')
 
 const app= express()
 app.use(cors())
 app.use(express.json())
 app.use('/api/auth', authRouter)
-
+app.use('/api/auction',auctionRouter )
 
 app.get("/",(req,res)=>{
     res.send("Home route")

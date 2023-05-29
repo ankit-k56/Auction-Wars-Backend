@@ -1,4 +1,4 @@
-const mongoose = require('mmongoose')
+const mongoose = require('mongoose')
 
 const AuctionSchema = new mongoose.Schema({
     title:{
@@ -37,7 +37,9 @@ const AuctionSchema = new mongoose.Schema({
     ],
     highestBid:{
         type: Number,
-        default:initialBid
+        default: function(){
+            return this.initialBid
+        }
     },
     winner:{
         type: mongoose.Types.ObjectId,
