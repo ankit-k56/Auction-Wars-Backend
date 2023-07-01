@@ -17,7 +17,7 @@ const AuctionSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
-    creator:{
+    creater:{
         type:mongoose.Types.ObjectId,
         ref:'User'
     },

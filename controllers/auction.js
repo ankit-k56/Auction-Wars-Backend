@@ -2,23 +2,38 @@ const Auction = require('../models/Auction')
 
 require('dotenv').config()
 const GetAllAuctions = async(req, res)=>{
-    const auction = await Auction.find({})
+    const auction = await Auction.find({}).populate("bidders")
     res.status(200).json({auction})
 }
-const GetAuction = async(req, res)=>(
-    res.status(200).send("Single auction end point")
-
-)
+const GetAuction = async(req, res)=>{ 
+    const id = req.params.id;
+    const auction = await  Auction.findById(id).populate('creater').populate("bidders")
+    console.log(auction)
+    console.log(id)
+    
+    res.status(200).json({auction})
+}
 const PostAuction = async(req, res)=>{ 
-    const { title,description, photo, initialBid, creater, startDate, duration } = req.body;
-    const auction = await Auction.create({title,description, photo, initialBid, creater, startDate, duration})
+    const { title,description, photo, initialBid,  startDate, duration, bidders } = req.body;
+    const creater = req.user.id;
+    const auction = await Auction.create({title,description, photo, initialBid, creater, startDate, duration,bidders})
     res.status(200).send({auction})
-
 }
 const DeleteAuction = async(req, res)=>{ 
-    res.status(200).send("delete auction end point ")
+    const id = req.params.id;
+    const auction = await Auction.findByIdAndDelete(id)
+    res.status(200).json({auction})
 }
-const UpdateAuction = async(req,res)=>{ 
-    res.status(200).send("Update Auction")
+const UpdateAuctionHighestBid = async(req,res)=>{ 
+    const {bid} = req.body;
+    const id = req.params.id;
+    const auction = await Auction.findOneAndUpdate({_id:id}, {highestBid: bid}, {returnOriginal:false})
+    res.status(200).json({auction})
 }
-module.exports = {  GetAllAuctions,GetAuction,DeleteAuction, PostAuction, UpdateAuction }
+const UpdateStatus = async(req,res)=>{
+    // const { id } = req.user;
+    const id = req.params.id;
+    const auction = await Auction.findByIdAndUpdate(id, {staus:'Ongoing'},{returnOriginal:false})
+    res.status(200).json({auction})
+}
+module.exports = {  GetAllAuctions,GetAuction,DeleteAuction, PostAuction, UpdateAuctionHighestBid, UpdateStatus }

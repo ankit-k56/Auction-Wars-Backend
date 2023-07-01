@@ -12,7 +12,7 @@ const login = async(req, res) =>{
     if(!isPasswordcorrect){
         res.status(401).send("Access denied kid! ")
     }
-    const token = jwt.sign({email, password}, process.env.SECRET, {expiresIn: '30d'})
+    const token = jwt.sign({id:user._id, name:user.name}, process.env.SECRET, {expiresIn: '30d'})
     
     res.status(200).json({user, token});
     
@@ -24,7 +24,7 @@ const register = async(req, res)=>{
     const salt = await bycrypt.genSalt(10);
     const hashedPassword = await bycrypt.hash(password, salt )
     const user = await User.create({email, password: hashedPassword, name});
-    const token = jwt.sign({email, password: hashedPassword, name}, process.env.SECRET, {expiresIn: '30d'});
+    const token = jwt.sign({id:user._id, name:user.name}, process.env.SECRET, {expiresIn: '30d'});
     res.json({user,token});
 
 }
