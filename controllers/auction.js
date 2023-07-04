@@ -8,8 +8,8 @@ const GetAllAuctions = async(req, res)=>{
 const GetAuction = async(req, res)=>{ 
     const id = req.params.id;
     const auction = await  Auction.findById(id).populate('creater').populate("bidders")
-    console.log(auction)
-    console.log(id)
+    // console.log(auction)
+    // console.log(id)
     
     res.status(200).json({auction})
 }
