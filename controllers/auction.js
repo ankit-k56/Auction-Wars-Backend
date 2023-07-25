@@ -2,7 +2,7 @@ const Auction = require('../models/Auction')
 
 require('dotenv').config()
 const GetAllAuctions = async(req, res)=>{
-    const auction = await Auction.find({}).populate("bidders")
+    const auction = await Auction.find({}).populate("bidders").populate('creater')
     res.status(200).json({auction})
 }
 const GetAuction = async(req, res)=>{ 

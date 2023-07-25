@@ -1,12 +1,13 @@
 require('dotenv').config();
 const express = require("express")
 const cors = require('cors');
-const SocjetIo = require('socket.io')
-const Auction = require('./models/Auction')
+const SocketIo = require('socket.io')
+// const Auction = require('./models/Auction')
 const connectDb = require("./db/connect")
 const authRouter = require('./routes/auth')
 const auctionRouter = require('./routes/auction')
-const authenticate = require('./middleware/authentication')
+const authenticate = require('./middleware/authentication');
+const Auction = require('./models/Auction');
 
 const app= express()
 app.use(cors())
@@ -23,33 +24,59 @@ const server = async()=>{
         var sr =app.listen(5000, ()=>{
             console.log(`Server is running on port 5000`)
         })
-        const io = SocjetIo(sr,{
+        const io = SocketIo(sr,{
             cors:{
                 origin:"http://127.0.0.1:5173"
             }
         });
-        io.on("connection", (socket)=>{
+        await io.on("connection", async(socket)=>{
+
+            let {roomId} = socket.handshake.query;
+            const Prod =  await Auction.findById(roomId);
+            // console.log(Prod);
+            let timer = Prod.duration;
+            if(timer>0){
+                // console.log("Room Id"+roomId);
+                setInterval(async()=>{
+                    // console.log('Hi')
+                    timer--;
+                    await Auction.findByIdAndUpdate(roomId,{
+                        duration : timer
+                    },{new:true})
+                    socket.emit('timer', timer)
+                    // console.log(timer)
+                },1000)
+            }
+
+            
+
             console.log("Connected to socket io")
-            socket.on('userJoined',(data)=>{
-                const {userId, name, roomId} = data;
-                Auction.findByIdAndUpdate(roomId,{
+            socket.on('userJoined',async(data)=>{
+                const {userId, name} = data;
+                await Auction.findByIdAndUpdate(roomId,{
                     $push: {bidders:userId},
                     
                 } , {new:true}).then((updatedAuction)=>{
-                    // console.log(updatedAuction);
+                    console.log(updatedAuction);
                 })
                 socket.join(roomId);
                 console.log(`User ${name} joined room ${roomId}`);
                 
             })
-            socket.on('newBid',(data)=>{
-                const {amount, roomId} = data;
-                Auction.findByIdAndUpdate(roomId,{
-                    highestBid: amount
+            socket.on('newBid',async(data)=>{
+                const {amount, userId} = data;
+                await  Auction.findByIdAndUpdate(roomId,{
+                    highestBid: amount,
+                    winner: userId
                 },{new:true}).then((j)=>{
                     console.log(j);
                 })
-                socket.in(roomId).emit('new highest bid',amount);
+                socket.emit('newhbid',amount);
+            })
+            socket.on('auction-ended', async()=>{
+                await Auction.findByIdAndUpdate(roomId,{
+                    staus: 'Ended'
+                })
             })
         })
     }
