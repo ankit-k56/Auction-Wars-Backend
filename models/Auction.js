@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const AuctionSchema = new mongoose.Schema({
+const AuctionSchema = mongoose.Schema({
     title:{
         type:String,
         required:true
@@ -50,4 +50,4 @@ const AuctionSchema = new mongoose.Schema({
         default: 'Upcoming'
     }
 })
-module.exports = mongoose.model('Auction',  AuctionSchema)
+module.exports = mongoose.model( 'Auction',  AuctionSchema)

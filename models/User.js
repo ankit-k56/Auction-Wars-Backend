@@ -20,21 +20,22 @@ const UserSchema = mongoose.Schema({
     },
     address:{
         type: String,
-        // required: [true, 'Please provide a address']
+        required: [true, 'Please provide a address']
     },
 
-    // purchasedItems:[
-    //     {
-    //         type:mongoose.Types.ObjectId,
-    //         ref:'auction'
-    //     }
-    // ],
-    // postedAuctions:[
-    //     {
-    //         typeof:mongoose.Types.ObjectId,
-    //         ref:'auction'
-    //     }
-    // ]
+    auctionsWon:[
+        {
+            type:mongoose.Types.ObjectId,
+            ref : 'Auction'
+        }
+    ],
+    postedAuctions:[
+        {
+            type:mongoose.Types.ObjectId,
+            ref : 'Auction'
+        }
+    ]
 
+    
 })
 module.exports = mongoose.model('User', UserSchema)
