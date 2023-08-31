@@ -2,7 +2,6 @@ require('dotenv').config();
 const express = require("express")
 const cors = require('cors');
 const SocketIo = require('socket.io')
-// const Auction = require('./models/Auction')
 const connectDb = require("./db/connect")
 const authRouter = require('./routes/auth')
 const auctionRouter = require('./routes/auction')
@@ -45,7 +44,6 @@ const server = async()=>{
         });
         await io.on("connection", async(socket)=>{
 
-            // let biddersCount =0 ;
 
             let {roomId,userId, name} = socket.handshake.query;
             socket.join(roomId);
@@ -59,24 +57,25 @@ const server = async()=>{
             
             console.log(`User ${name} joined room ${roomId}`);
 
-            // socket.emit('newbidder', ++biddersCount)
-            
-            
-            // console.log(Prod);
+
             let timer = Prod.duration;
+            if(timer<=0){
+                await Auction.findByIdAndUpdate(roomId,{
+                    staus: 'Ended'
+                })
+            }
             
-                setInterval(async()=>{
-                    // console.log('Hi')
-                    if(timer>0){
-                        timer--;
-                    await Auction.findByIdAndUpdate(roomId,{
-                        duration : timer
-                    },{new:true})
+            setInterval(async()=>{
+                if(timer>0){
+                    timer--;
+                await Auction.findByIdAndUpdate(roomId,{
+                    duration : timer
+                },{new:true})
                     socket.emit('timer', timer)
-                    // console.log(timer)
-                    }
                     
-                },1000)
+                }
+                    
+            },1000)
             
 
             
@@ -104,12 +103,15 @@ const server = async()=>{
                 },{new:true}).then((j)=>{
                     console.log(j);
                 })
-                socket.to(roomId).emit('newhbid',amount);
+                let bidder = userId
+                socket.to(roomId).emit('newhbid',amount ,bidder);
             })
             socket.on('auction-ended', async()=>{
                 await Auction.findByIdAndUpdate(roomId,{
                     staus: 'Ended'
                 })
+                console.log({m:'auction Ended'})
+                socket.to(roomId).emit('ended')
             })
             socket.on('disconnect', ()=>{
                 console.log("user disconnected")

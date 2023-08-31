@@ -26,7 +26,7 @@ const GetAuction = asyncErrorHandler(async(req, res,next)=>{
 
 const PostAuction = asyncErrorHandler(async(req, res)=>{ 
     const { title,description,  initialBid,  startDate, duration, bidders } = req.body;
-    if(!title || !description || !initialBid || !startDate || !duration || !bidders){
+    if(!title || !description || !initialBid || !startDate || !duration){
         throw new Badrequest('Not all required field provided in request!')
         // next(err)
     }
