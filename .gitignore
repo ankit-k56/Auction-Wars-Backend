@@ -10,7 +10,6 @@ node_modules
 # Ignore system-specific files or directories
 /bin/
 /build/
-/public/
 
 # Ignore sensitive or private information
 credentials.txt
