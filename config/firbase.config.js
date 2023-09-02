@@ -3,17 +3,17 @@
 // import { getAnalytics } from "firebase/analytics";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
-
+require('dotenv').config();
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyCekcBSvC7uwC-D_O_AD_QSyKexZnDXF54",
-  authDomain: "auction-wars-7ae9e.firebaseapp.com",
-  projectId: "auction-wars-7ae9e",
-  storageBucket: "auction-wars-7ae9e.appspot.com",
-  messagingSenderId: "1057956682802",
-  appId: "1:1057956682802:web:149b58ca12d1221ed2302b",
-  measurementId: "G-6LDBY2QJ6Q"
+  apiKey: process.env.API_KEY,
+  authDomain: process.env.AUTH_DOMAIN,
+  projectId: process.env.PROJECT_ID,
+  storageBucket: process.env.STORAGE_BUCKET,
+  messagingSenderId: process.env.MESSAGE_SENDERID,
+  appId: process.env.APP_ID,
+  measurementId: process.env.MEASUREMENT_ID
 };
 module.exports = firebaseConfig
 
