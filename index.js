@@ -39,7 +39,7 @@ const server = async()=>{
         })
         const io = SocketIo(sr,{
             cors:{
-                origin:"https://auction-wars.vercel.app/"
+                origin:"https://auction-wars.vercel.app"
             }
         });
         await io.on("connection", async(socket)=>{
